@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>Writing Tracker</title>
+    <script>
+      // Decode the path encoded by public/404.html and restore it into history.
+      ;(function () {
+        var q = window.location.search
+        if (q && q[1] === 'p') {
+          var searchParams = q.slice(1).split('&')
+          var path = searchParams.find(function (s) { return s.startsWith('p=') })
+          var query = searchParams.find(function (s) { return s.startsWith('q=') })
+          if (path) {
+            var decoded =
+              '/' + path.slice(2).replace(/~and~/g, '&') +
+              (query ? '?' + query.slice(2).replace(/~and~/g, '&') : '') +
+              window.location.hash
+            window.history.replaceState(null, null, decoded)
+          }
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
