@@ -1,11 +1,13 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useSessionsStore } from '../../store/sessionsStore'
 import { useProjectsStore } from '../../store/projectsStore'
 import { SessionCard } from './SessionCard'
+import { EditSessionSheet } from './EditSessionSheet'
 import { formatDisplayDate, formatNumber } from '../../lib/utils'
 import type { Session } from '../../types'
 
 export const HistoryScreen = () => {
+  const [editingSession, setEditingSession] = useState<Session | null>(null)
   const sessions = useSessionsStore((s) => s.sessions)
   const deleteSession = useSessionsStore((s) => s.deleteSession)
   const projects = useProjectsStore((s) => s.projects)
@@ -41,7 +43,6 @@ export const HistoryScreen = () => {
           const dayTotal = dateSessions.reduce((sum, s) => sum + s.wordCount, 0)
           return (
             <div key={date}>
-              {/* Date header */}
               <div className="flex items-baseline justify-between mb-2">
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">
                   {formatDisplayDate(date)}
@@ -51,7 +52,6 @@ export const HistoryScreen = () => {
                 </p>
               </div>
 
-              {/* Sessions for this date */}
               <div className="flex flex-col gap-2">
                 {dateSessions.map((session) => (
                   <SessionCard
@@ -59,6 +59,7 @@ export const HistoryScreen = () => {
                     session={session}
                     project={projects.find((p) => p.id === session.projectId)}
                     onDelete={deleteSession}
+                    onEdit={setEditingSession}
                   />
                 ))}
               </div>
@@ -66,6 +67,11 @@ export const HistoryScreen = () => {
           )
         })}
       </div>
+
+      <EditSessionSheet
+        session={editingSession}
+        onClose={() => setEditingSession(null)}
+      />
     </div>
   )
 }
